@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAAS Real Estate - Database ERD</title>
+<style>
+  @media print {
+    body { margin: 0; }
+    .no-print { display: none; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .page {
+    width: 297mm;
+    min-height: 210mm;
+    background: #fff;
+    padding: 20px 15px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  h1 {
+    text-align: center;
+    font-size: 18px;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 10px;
+    color: #888;
+    margin-bottom: 14px;
+  }
+  svg { display: block; margin: 0 auto; }
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 8px;
+    font-size: 9px;
+    color: #555;
+  }
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>LAAS REAL ESTATE — DATABASE ENTITY RELATIONSHIP DIAGRAM</h1>
+  <p class="subtitle">SQLite · 14 Tables · Polymorphic Associations (payments, commissions, notifications)</p>
+
+  <svg viewBox="0 0 1100 620" width="100%" height="600" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#999"/>
+      </marker>
+      <marker id="crow" viewBox="0 0 20 20" refX="0" refY="10" markerWidth="12" markerHeight="12" orient="auto">
+        <path d="M 20 10 L 4 4 M 20 10 L 4 10 M 20 10 L 4 16" stroke="#999" stroke-width="1.5" fill="none"/>
+      </marker>
+      <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+        <feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <!-- ============ LINES (relationships drawn first, behind boxes) ============ -->
+
+    <!-- users → properties -->
+    <line x1="155" y1="72" x2="155" y2="130" stroke="#999" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <text x="160" y="105" font-size="7" fill="#aaa">1:N</text>
+
+    <!-- users → cleaners -->
+    <line x1="330" y1="60" x2="330" y2="130" stroke="#999" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <text x="335" y="98" font-size="7" fill="#aaa">1:N</text>
+
+    <!-- properties → land_sales -->
+    <line x1="100" y1="235" x2="100" y2="280" stroke="#999" stroke-width="1.2"/>
+    <!-- properties → house_sales -->
+    <line x1="210" y1="235" x2="210" y2="280" stroke="#999" stroke-width="1.2"/>
+    <!-- properties → house_rentals -->
+    <line x1="320" y1="235" x2="320" y2="280" stroke="#999" stroke-width="1.2"/>
+
+    <!-- customers → land_sales -->
+    <line x1="530" y1="235" x2="100" y2="280" stroke="#999" stroke-width="1.0" stroke-dasharray="3,3"/>
+    <!-- customers → house_sales -->
+    <line x1="560" y1="235" x2="210" y2="280" stroke="#999" stroke-width="1.0" stroke-dasharray="3,3"/>
+    <!-- customers → house_rentals -->
+    <line x1="590" y1="235" x2="320" y2="280" stroke="#999" stroke-width="1.0" stroke-dasharray="3,3"/>
+
+    <!-- users → land_sales (registered_by) -->
+    <line x1="30" y1="72" x2="30" y2="280" stroke="#999" stroke-width="1.0" stroke-dasharray="5,4"/>
+    <!-- users → house_sales -->
+    <line x1="45" y1="72" x2="210" y2="280" stroke="#999" stroke-width="1.0" stroke-dasharray="5,4"/>
+    <!-- users → house_rentals -->
+    <line x1="60" y1="72" x2="320" y2="280" stroke="#999" stroke-width="1.0" stroke-dasharray="5,4"/>
+
+    <!-- sales → payments (polymorphic) -->
+    <line x1="100" y1="375" x2="250" y2="410" stroke="#e67e22" stroke-width="1.3"/>
+    <line x1="210" y1="375" x2="250" y2="410" stroke="#e67e22" stroke-width="1.3"/>
+    <line x1="320" y1="375" x2="290" y2="410" stroke="#e67e22" stroke-width="1.3"/>
+
+    <!-- sales → commissions (polymorphic) -->
+    <line x1="100" y1="375" x2="550" y2="410" stroke="#e74c3c" stroke-width="1.0" stroke-dasharray="4,3"/>
+    <line x1="210" y1="375" x2="560" y2="410" stroke="#e74c3c" stroke-width="1.0" stroke-dasharray="4,3"/>
+    <line x1="320" y1="375" x2="570" y2="410" stroke="#e74c3c" stroke-width="1.0" stroke-dasharray="4,3"/>
+
+    <!-- customers → used_items -->
+    <line x1="620" y1="235" x2="730" y2="280" stroke="#999" stroke-width="1.0" stroke-dasharray="3,3"/>
+
+    <!-- used_items → payments -->
+    <line x1="750" y1="375" x2="420" y2="410" stroke="#e67e22" stroke-width="1.0" stroke-dasharray="4,3"/>
+
+    <!-- users → activity_logs -->
+    <line x1="270" y1="72" x2="770" y2="130" stroke="#999" stroke-width="1.0" stroke-dasharray="4,3"/>
+
+    <!-- users → notifications -->
+    <line x1="310" y1="72" x2="920" y2="130" stroke="#999" stroke-width="1.0" stroke-dasharray="4,3"/>
+
+    <!-- users → payments (processed_by) -->
+    <line x1="200" y1="72" x2="350" y2="410" stroke="#999" stroke-width="1.0" stroke-dasharray="5,4"/>
+
+    <!-- ============ TABLE BOXES ============ -->
+
+    <!-- USERS -->
+    <g filter="url(#shadow)">
+      <rect x="20" y="20" width="340" height="52" rx="6" fill="#3498db" stroke="#2980b9" stroke-width="1.5"/>
+      <text x="190" y="42" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">USERS</text>
+      <text x="30" y="58" font-size="7.5" fill="#e8f4fd">id(PK) | name | email(U) | username(U) | password | phone | role | is_active | profile_picture | two_factor_enabled | deleted_at</text>
+    </g>
+
+    <!-- PROPERTIES -->
+    <g filter="url(#shadow)">
+      <rect x="20" y="130" width="320" height="105" rx="6" fill="#3498db" stroke="#2980b9" stroke-width="1.5"/>
+      <text x="180" y="148" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">PROPERTIES</text>
+      <text x="30" y="163" font-size="7" fill="#e8f4fd">id(PK) | title | type | status | price | location | address</text>
+      <text x="30" y="175" font-size="7" fill="#e8f4fd">area | bedrooms | bathrooms | house_type | floors | land_type</text>
+      <text x="30" y="187" font-size="7" fill="#e8f4fd">amenities(JSON) | images(JSON) | owner | phone | notes</text>
+      <text x="30" y="202" font-size="7" fill="#ffe082">registered_by → users.id(FK)</text>
+      <text x="30" y="214" font-size="7" fill="#e8f4fd">deleted_at | created_at | updated_at</text>
+      <line x1="20" y1="196" x2="340" y2="196" stroke="#2980b9" stroke-width="0.5" stroke-dasharray="2,2"/>
+    </g>
+
+    <!-- CLEANERS -->
+    <g filter="url(#shadow)">
+      <rect x="240" y="130" width="170" height="105" rx="6" fill="#9b59b6" stroke="#8e44ad" stroke-width="1.5"/>
+      <text x="325" y="148" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">CLEANERS</text>
+      <text x="250" y="163" font-size="7" fill="#f3e5f5">id(PK) | first_name | last_name</text>
+      <text x="250" y="175" font-size="7" fill="#f3e5f5">phone | email | address | salary</text>
+      <text x="250" y="187" font-size="7" fill="#f3e5f5">status | notes</text>
+      <text x="250" y="202" font-size="7" fill="#ffe082">registered_by → users.id(FK)</text>
+      <text x="250" y="214" font-size="7" fill="#f3e5f5">deleted_at | created_at | updated_at</text>
+      <line x1="240" y1="196" x2="410" y2="196" stroke="#8e44ad" stroke-width="0.5" stroke-dasharray="2,2"/>
+    </g>
+
+    <!-- CUSTOMERS -->
+    <g filter="url(#shadow)">
+      <rect x="440" y="130" width="240" height="105" rx="6" fill="#3498db" stroke="#2980b9" stroke-width="1.5"/>
+      <text x="560" y="148" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">CUSTOMERS</text>
+      <text x="450" y="163" font-size="7" fill="#e8f4fd">id(PK) | customer_number(U)</text>
+      <text x="450" y="175" font-size="7" fill="#e8f4fd">first_name | last_name | email(U)</text>
+      <text x="450" y="187" font-size="7" fill="#e8f4fd">phone | address | id_type</text>
+      <text x="450" y="199" font-size="7" fill="#e8f4fd">is_buyer | is_tenant | notes</text>
+      <text x="450" y="214" font-size="7" fill="#e8f4fd">deleted_at | created_at | updated_at</text>
+    </g>
+
+    <!-- LAND_SALES -->
+    <g filter="url(#shadow)">
+      <rect x="20" y="280" width="170" height="95" rx="6" fill="#27ae60" stroke="#219a52" stroke-width="1.5"/>
+      <text x="105" y="298" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">LAND_SALES</text>
+      <text x="28" y="313" font-size="7" fill="#e8f8f0">id(PK) | sale_price | commission</text>
+      <text x="28" y="325" font-size="7" fill="#e8f8f0">sale_date | payment_method</text>
+      <text x="28" y="337" font-size="7" fill="#e8f8f0">status | meters | location</text>
+      <text x="28" y="352" font-size="7" fill="#ffe082">property_id → properties.id</text>
+      <text x="28" y="363" font-size="7" fill="#ffe082">customer_id → customers.id</text>
+      <text x="28" y="373" font-size="7" fill="#ffe082">registered_by → users.id</text>
+    </g>
+
+    <!-- HOUSE_SALES -->
+    <g filter="url(#shadow)">
+      <rect x="200" y="280" width="170" height="95" rx="6" fill="#27ae60" stroke="#219a52" stroke-width="1.5"/>
+      <text x="285" y="298" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">HOUSE_SALES</text>
+      <text x="208" y="313" font-size="7" fill="#e8f8f0">id(PK) | sale_price | commission</text>
+      <text x="208" y="325" font-size="7" fill="#e8f8f0">sale_date | payment_method</text>
+      <text x="208" y="337" font-size="7" fill="#e8f8f0">status | location</text>
+      <text x="208" y="352" font-size="7" fill="#ffe082">property_id → properties.id</text>
+      <text x="208" y="363" font-size="7" fill="#ffe082">customer_id → customers.id</text>
+      <text x="208" y="373" font-size="7" fill="#ffe082">registered_by → users.id</text>
+    </g>
+
+    <!-- HOUSE_RENTALS -->
+    <g filter="url(#shadow)">
+      <rect x="20" y="280" width="170" height="95" rx="6" fill="#27ae60" stroke="#219a52" stroke-width="1.5"/>
+      <rect x="200" y="280" width="170" height="95" rx="6" fill="#27ae60" stroke="#219a52" stroke-width="1.5"/>
+    </g>
+    <g filter="url(#shadow)">
+      <rect x="380" y="280" width="170" height="95" rx="6" fill="#27ae60" stroke="#219a52" stroke-width="1.5"/>
+      <text x="465" y="298" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">HOUSE_RENTALS</text>
+      <text x="388" y="313" font-size="7" fill="#e8f8f0">id(PK) | rent_amount | deposit</text>
+      <text x="388" y="325" font-size="7" fill="#e8f8f0">commission | start_date | end_date</text>
+      <text x="388" y="337" font-size="7" fill="#e8f8f0">status | location</text>
+      <text x="388" y="352" font-size="7" fill="#ffe082">property_id → properties.id</text>
+      <text x="388" y="363" font-size="7" fill="#ffe082">customer_id → customers.id</text>
+      <text x="388" y="373" font-size="7" fill="#ffe082">registered_by → users.id</text>
+    </g>
+
+    <!-- PAYMENTS (polymorphic) -->
+    <g filter="url(#shadow)">
+      <rect x="160" y="410" width="280" height="105" rx="6" fill="#e67e22" stroke="#d35400" stroke-width="1.5"/>
+      <text x="300" y="428" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">PAYMENTS (polymorphic)</text>
+      <text x="170" y="444" font-size="7" fill="#fdf2e9">id(PK) | payable_type | payable_id ← land_sales/house_sales/house_rentals/used_items</text>
+      <text x="170" y="457" font-size="7" fill="#fdf2e9">amount | payment_method | reference_number | payment_date</text>
+      <text x="170" y="470" font-size="7" fill="#fdf2e9">status | notes</text>
+      <text x="170" y="485" font-size="7" fill="#ffe082">customer_id → customers.id(FK)</text>
+      <text x="170" y="497" font-size="7" fill="#ffe082">property_id → properties.id(FK)</text>
+      <text x="170" y="509" font-size="7" fill="#ffe082">processed_by → users.id(FK)</text>
+    </g>
+
+    <!-- COMMISSIONS (polymorphic) -->
+    <g filter="url(#shadow)">
+      <rect x="460" y="410" width="280" height="105" rx="6" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5"/>
+      <text x="600" y="428" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">COMMISSIONS (polymorphic)</text>
+      <text x="470" y="444" font-size="7" fill="#fdedec">id(PK) | commission_type | commission_id ← land_sales/house_sales/house_rentals</text>
+      <text x="470" y="457" font-size="7" fill="#fdedec">amount | rate | commission | status</text>
+      <text x="470" y="475" font-size="7" fill="#ffe082">property_id → properties.id(FK)</text>
+      <text x="470" y="487" font-size="7" fill="#ffe082">customer_id → customers.id(FK)</text>
+      <text x="470" y="499" font-size="7" fill="#ffe082">registered_by → users.id(FK)</text>
+      <text x="470" y="509" font-size="7" fill="#fdedec">created_at | updated_at | deleted_at</text>
+    </g>
+
+    <!-- USED_ITEMS -->
+    <g filter="url(#shadow)">
+      <rect x="700" y="130" width="170" height="120" rx="6" fill="#9b59b6" stroke="#8e44ad" stroke-width="1.5"/>
+      <text x="785" y="148" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">USED_ITEMS</text>
+      <text x="710" y="163" font-size="7" fill="#f3e5f5">id(PK) | name | description</text>
+      <text x="710" y="175" font-size="7" fill="#f3e5f5">category | price | condition</text>
+      <text x="710" y="187" font-size="7" fill="#f3e5f5">status | images(JSON)</text>
+      <text x="710" y="202" font-size="7" fill="#ffe082">customer_id → customers.id(FK)</text>
+      <text x="710" y="214" font-size="7" fill="#ffe082">sold_to → customers.id(FK)</text>
+      <text x="710" y="226" font-size="7" fill="#ffe082">registered_by → users.id(FK)</text>
+      <text x="710" y="240" font-size="7" fill="#f3e5f5">sold_date | notes | deleted_at</text>
+      <line x1="700" y1="196" x2="870" y2="196" stroke="#8e44ad" stroke-width="0.5" stroke-dasharray="2,2"/>
+    </g>
+
+    <!-- ACTIVITY_LOGS -->
+    <g filter="url(#shadow)">
+      <rect x="700" y="280" width="190" height="85" rx="6" fill="#7f8c8d" stroke="#6c7a7d" stroke-width="1.5"/>
+      <text x="795" y="298" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">ACTIVITY_LOGS</text>
+      <text x="710" y="313" font-size="7" fill="#ecf0f1">id(PK) | action | module</text>
+      <text x="710" y="325" font-size="7" fill="#ecf0f1">description | old_values | new_values</text>
+      <text x="710" y="340" font-size="7" fill="#ffe082">user_id → users.id(FK)</text>
+      <text x="710" y="355" font-size="7" fill="#ecf0f1">created_at | updated_at</text>
+    </g>
+
+    <!-- NOTIFICATIONS -->
+    <g filter="url(#shadow)">
+      <rect x="910" y="130" width="180" height="85" rx="6" fill="#7f8c8d" stroke="#6c7a7d" stroke-width="1.5"/>
+      <text x="1000" y="148" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">NOTIFICATIONS</text>
+      <text x="920" y="163" font-size="7" fill="#ecf0f1">id(PK, UUID) | type</text>
+      <text x="920" y="175" font-size="7" fill="#ecf0f1">data(JSON) | read_at</text>
+      <text x="920" y="192" font-size="7" fill="#ffe082">notifiable_type + notifiable_id</text>
+      <text x="920" y="204" font-size="7" fill="#ffe082">  → users (polymorphic FK)</text>
+    </g>
+
+    <!-- SETTINGS -->
+    <g filter="url(#shadow)">
+      <rect x="700" y="410" width="150" height="55" rx="6" fill="#7f8c8d" stroke="#6c7a7d" stroke-width="1.5"/>
+      <text x="775" y="428" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">SETTINGS</text>
+      <text x="710" y="445" font-size="7" fill="#ecf0f1">id(PK) | key(U) | value</text>
+      <text x="710" y="457" font-size="7" fill="#ecf0f1">created_at | updated_at</text>
+    </g>
+
+    <!-- PUBLIC_INQUIRIES -->
+    <g filter="url(#shadow)">
+      <rect x="870" y="410" width="165" height="55" rx="6" fill="#7f8c8d" stroke="#6c7a7d" stroke-width="1.5"/>
+      <text x="952" y="428" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">PUBLIC_INQUIRIES</text>
+      <text x="880" y="445" font-size="7" fill="#ecf0f1">id(PK) | type | name | email</text>
+      <text x="880" y="457" font-size="7" fill="#ecf0f1">phone | interest | subject | message</text>
+    </g>
+
+    <!-- POLYMORPHIC labels -->
+    <text x="170" y="405" font-size="7" fill="#e67e22" font-style="italic">polymorphic →</text>
+    <text x="462" y="405" font-size="7" fill="#e74c3c" font-style="italic">polymorphic →</text>
+
+    <!-- Legend lines -->
+    <line x1="20" y1="585" x2="50" y2="585" stroke="#999" stroke-width="1.2"/>
+    <text x="55" y="588" font-size="8" fill="#666">Foreign Key (1:N)</text>
+    <line x1="180" y1="585" x2="210" y2="585" stroke="#999" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <text x="215" y="588" font-size="8" fill="#666">Indirect / Polymorphic FK</text>
+    <line x1="380" y1="585" x2="410" y2="585" stroke="#e67e22" stroke-width="1.2"/>
+    <text x="415" y="588" font-size="8" fill="#666">Payments Link</text>
+    <line x1="530" y1="585" x2="560" y2="585" stroke="#e74c3c" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <text x="565" y="588" font-size="8" fill="#666">Commissions Link</text>
+    <rect x="700" y="578" width="12" height="12" rx="2" fill="#3498db"/>
+    <text x="718" y="588" font-size="8" fill="#666">Core Entities</text>
+    <rect x="800" y="578" width="12" height="12" rx="2" fill="#27ae60"/>
+    <text x="818" y="588" font-size="8" fill="#666">Sales/Rentals</text>
+    <rect x="900" y="578" width="12" height="12" rx="2" fill="#e67e22"/>
+    <text x="918" y="588" font-size="8" fill="#666">Financial</text>
+
+    <!-- PK / U / FK key -->
+    <text x="20" y="605" font-size="8" fill="#666">PK = Primary Key | U = Unique | FK = Foreign Key | JSON = stored as TEXT</text>
+  </svg>
+
+  <div class="legend no-print">
+    <button onclick="window.print()" style="margin:8px auto;display:block;padding:8px 24px;background:#3498db;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;">Print / Save as PDF</button>
+  </div>
+</div>
+</body>
+</html>

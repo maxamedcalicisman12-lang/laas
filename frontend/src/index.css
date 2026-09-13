@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+html {
+  background-color: #f9fafb;
+}
+
+html.dark {
+  background-color: #111827;
+}
+
+:root {
+  --accent: #eab308;
+  --app-font-size: 1rem;
+  --app-font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  font-size: var(--app-font-size);
+  font-family: var(--app-font-family);
+}
+
+.sidebar-bg {
+  background-color: var(--accent);
+}
+
+.sidebar-border {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-link:hover {
+  background-color: var(--accent);
+  opacity: 0.85;
+}
+
+.sidebar-link.active {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+}
+
+.accent-bg {
+  background-color: var(--accent);
+}
+
+.accent-text {
+  color: var(--accent);
+}
+
+.accent-border {
+  border-color: var(--accent);
+}
+
+.accent-ring:focus {
+  --tw-ring-color: var(--accent);
+  border-color: var(--accent);
+}

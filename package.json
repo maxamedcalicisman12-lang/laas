@@ -1,0 +1,13 @@
+{
+  "name": "laas-real-estate",
+  "version": "1.0.0",
+  "description": "LAAS Real Estate - Full Stack App",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/start.js",
+    "start": "node scripts/start.js"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
