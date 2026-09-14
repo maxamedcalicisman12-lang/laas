@@ -1,0 +1,39 @@
+# dependencies
+node_modules/
+
+# builds
+dist/
+build/
+out/
+
+# env / secrets (never commit)
+.env
+.env.*
+!.env.example
+
+# database (local SQLite)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+backend/database/database.sqlite*
+
+# uploads & backups
+storage/
+backend/storage/
+backend/backups/
+
+# temp probe scripts
+backend/_*.js
+
+# nested duplicate project folder
+/laas-real-estate-react/
+
+# logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
