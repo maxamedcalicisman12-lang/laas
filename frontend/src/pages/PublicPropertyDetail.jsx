@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import api from '../api/client';
+import { getPublicListing } from '../api/supabase';
 import { useApp } from '../context/AppContext';
 
 const TYPE_EMOJI = {
@@ -53,10 +53,9 @@ export default function PublicPropertyDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    api
-      .get(`/public/listings/${id}`)
-      .then(({ data }) => setProperty(data))
-      .catch((err) => setError(err.response?.data?.message || 'Property failed to load.'))
+    getPublicListing(id)
+      .then((data) => setProperty(data))
+      .catch((err) => setError(err.message === 'Not found' ? 'Guri lama helin.' : err.message || 'Property failed to load.'))
       .finally(() => setLoading(false));
   }, [id]);
 

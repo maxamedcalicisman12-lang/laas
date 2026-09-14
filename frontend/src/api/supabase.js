@@ -186,3 +186,49 @@ export async function getPublicListing(id) {
     sale: sale || null,
   };
 }
+
+const nowIso = () => new Date().toISOString();
+
+// Mirrors backend publicController.register/contact — writes directly to
+// public_inquiries so the static (Vercel) public site has no backend dependency.
+export async function submitPublicRegister({ name, phone, interest }) {
+  const { data, error } = await supabase
+    .from('public_inquiries')
+    .insert({
+      type: 'register',
+      name: String(name || '').trim(),
+      email: '',
+      phone: phone || null,
+      interest: interest || null,
+      subject: null,
+      message: null,
+      created_at: nowIso(),
+      updated_at: nowIso(),
+    })
+    .select('id')
+    .single();
+
+  if (error) throw new Error('Khalad baa dhacay. Mar kale isku day.');
+  return data.id;
+}
+
+export async function submitPublicContact({ name, email, phone, subject, message }) {
+  const { data, error } = await supabase
+    .from('public_inquiries')
+    .insert({
+      type: 'contact',
+      name: String(name || '').trim(),
+      email: String(email || '').trim(),
+      phone: phone || null,
+      interest: null,
+      subject: subject || null,
+      message: message || null,
+      created_at: nowIso(),
+      updated_at: nowIso(),
+    })
+    .select('id')
+    .single();
+
+  if (error) throw new Error('Khalad baa dhacay. Mar kale isku day.');
+  return data.id;
+}

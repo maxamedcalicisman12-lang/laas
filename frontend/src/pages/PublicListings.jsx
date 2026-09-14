@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../api/client';
+import { getPublicListings, submitPublicRegister } from '../api/supabase';
 import { useApp } from '../context/AppContext';
 
 const TABS = [
@@ -88,24 +88,20 @@ export default function PublicListings() {
     setRegMsg(null);
     setRegError(null);
     try {
-      const { data } = await api.post('/public/register', regForm);
-      setRegMsg(data.message);
+      await submitPublicRegister(regForm);
+      setRegMsg('Diwaangelin waad ku guuleysatay. Waannu kula xiriiri doonnaa.');
       setRegForm({ name: '', phone: '', interest: 'house_sale' });
     } catch (err) {
-      const errData = err.response?.data;
-      setRegError(
-        errData?.errors ? Object.values(errData.errors).flat()[0] : errData?.message || 'Khalad baa dhacay.'
-      );
+      setRegError(err.message || 'Khalad baa dhacay.');
     } finally {
       setRegLoading(false);
     }
   };
 
   useEffect(() => {
-    api
-      .get('/public/listings')
-      .then(({ data }) => setData(data))
-      .catch((err) => setError(err.response?.data?.message || 'Listings failed to load.'))
+    getPublicListings()
+      .then((data) => setData(data))
+      .catch((err) => setError(err.message || 'Listings failed to load.'))
       .finally(() => setLoading(false));
   }, []);
 
